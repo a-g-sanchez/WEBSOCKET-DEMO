@@ -1,11 +1,12 @@
 import './App.css'
+import { Messenger } from './components/messenger/Messenger'
 
 const App =() => {
   
 
   return (
     <>
-      <p>Hello World</p>
+      <Messenger />
     </>
   )
 }

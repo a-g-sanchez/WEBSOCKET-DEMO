@@ -1,8 +1,10 @@
 const express = require('express')
+const { createServer } = require('http')
 const { Server } = require('socket.io')
 
 const app = express()
-const io = new Server(app)
+const httpServer = createServer(app)
+const io = new Server(httpServer)
 
 app.get('/hello-world', (req, res) => {
     res.send({"msg": "Hello World"})
@@ -14,5 +16,5 @@ io.on('connection', (socket) => {
 })
 
 module.exports ={
-    app
+    httpServer
 }
