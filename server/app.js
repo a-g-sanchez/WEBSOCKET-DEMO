@@ -1,6 +1,8 @@
 const express = require('express')
 const { createServer } = require('http')
 const { Server } = require('socket.io')
+// Simulating parties. For PH need to check that the user is a member of the
+// chat they are trying to join.
 const { parties } = require('./parties.json')
 
 const app = express()
@@ -30,6 +32,20 @@ io.on('connection', (socket) => {
     console.log('a user connected')
     // GET user id from socket.handshake.auth
     console.log(socket.partyId)
+    const users = []
+    for (let [id, socket] of io.of("/").sockets){
+        users.push({
+            // ID of the socket the user is connected with
+            userId: id,
+            // PartyChat Id set through middleware
+            partyChat: socket.partyId
+        })
+    }
+
+    console.log(users)
+
+    // Send to client the list of users.
+    socket.emit('users', users)
 
     socket.on('send-message', (data) => {
         console.log(data)

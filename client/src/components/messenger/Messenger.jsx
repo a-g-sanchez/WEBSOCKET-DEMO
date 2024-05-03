@@ -27,6 +27,10 @@ export const Messenger = () => {
         console.log(err)
     })
 
+    socket.on('users', (users) => {
+        console.log(users)
+    })
+
     return(
         <>
             <section className="messenger-container">
