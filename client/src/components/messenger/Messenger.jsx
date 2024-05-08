@@ -3,9 +3,10 @@ import { socket } from '../../socket'
 import './messenger.css'
 
 export const Messenger = () => {
-    const [userId, setUserId] = useState(1) 
+    const [userId] = useState(1) 
     const [partyId] = useState(2)
     const [message, setMessage] = useState('')
+    const [messages, setMessages] = useState([])
 
     const connect = () => {
         socket.auth = { userId, partyId }
@@ -14,8 +15,7 @@ export const Messenger = () => {
 
     const sendMessage = (e) => {
         e.preventDefault()
-        console.log(message)
-        socket.emit('send-message', message)
+        socket.emit('send-message', {message, userId, partyId})
         setMessage('')
     }
 
@@ -27,14 +27,22 @@ export const Messenger = () => {
         console.log(err)
     })
 
-    socket.on('users', (users) => {
-        console.log(users)
+    socket.on('return-message', ({message, from}) => {
+        const messageArray = [...messages, {message, from}]
+        setMessages(messageArray)
     })
 
     return(
         <>
             <section className="messenger-container">
-                <p>Messenger here!</p>
+                <div className='message-display'>
+                    {messages.length > 0 && (messages.map((message) => (
+                        <div key={message.message.id} className={ message.from === userId ? 'sender' : 'recipiant'} >
+                            <p className='message'>{message.message.message}</p>
+                        </div>
+                        
+                    ))) }
+                </div>
                 <div>
                     <button onClick={connect}>Connect</button>
                     <button>Disconnect</button>
